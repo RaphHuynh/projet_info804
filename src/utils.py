@@ -9,8 +9,6 @@ def generate_cbow_data(encoded_text, window=2):
         y.append(target)
     return np.array(X), np.array(y)
 
-import numpy as np
-
 def generate_skipgram_data(encoded_tokens, window=2):
     """
     Génère des paires (target, context) pour le training Skip-gram sans échantillonnage négatif.

@@ -54,5 +54,8 @@ class ANNClassifier:
         self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1, validation_data=(X_test, y_test))
 
         y_pred = (self.model.predict(X_test) > 0.5).astype("int32")
+        print("\nÉtiquettes réelles (y_test) :", y_test)
+        print("Prédictions (y_pred) :", y_pred)
+
         print("\nClassification Report:")
         print(classification_report(y_test, y_pred))

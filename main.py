@@ -5,7 +5,9 @@ from src import SkipGramModel
 from src import generate_skipgram_data
 from src import generate_cbow_data
 from src import plot_embeddings
-from src import ANNClassifier  # <-- ajout ici
+from src import ANNClassifier
+from src import generate_negative_samples
+from src import subsample_frequent_words
 
 # Corpus de texte
 corpus = (
@@ -24,6 +26,10 @@ tp = TextPreprocessor(min_freq=1)
 tokens = tp.preprocess(corpus)
 tp.build_vocab(tokens)
 encoded = tp.encode(tokens)
+
+# Sous-échantillonnage des mots fréquents
+subsampled_tokens = subsample_frequent_words(tokens, threshold=1e-5)
+print(f"Nombre de tokens après sous-échantillonnage : {len(subsampled_tokens)}")
 
 # Générer les données pour CBOW
 X, y = generate_cbow_data(encoded, window=2)
@@ -61,7 +67,19 @@ skipgram = SkipGramModel(
     learning_rate=0.01
 )
 skipgram.summary()
-skipgram.train(target_words, context_words, y2, epochs=100)
+
+# Générer les données pour SkipGram avec échantillonnage négatif
+positive_pairs = list(zip(target_words, context_words))
+negative_samples, labels = generate_negative_samples(len(tp.word2idx), positive_pairs, num_negative=5)
+
+# Préparer les données pour l'entraînement
+target_words, context_words = zip(*negative_samples)
+target_words = np.array(target_words)
+context_words = np.array(context_words)
+labels = np.array(labels)
+
+# Entraîner le modèle SkipGram avec échantillonnage négatif
+skipgram.train(target_words, context_words, labels, epochs=100)
 skipgram_embeddings = skipgram.get_embeddings()
 
 # === Visualisation des embeddings (SkipGram ici) ===
@@ -97,3 +115,6 @@ predictions = (predictions > 0.5).astype("int32")
 
 print("Prédictions sur les documents de test :")
 print(predictions)
+
+unique_predictions = np.unique(predictions)
+print("Classes prédites :", unique_predictions)
