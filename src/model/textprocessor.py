@@ -1,5 +1,6 @@
 import re
 from collections import Counter
+from nltk.corpus import stopwords
 
 class TextPreprocessor:
     def __init__(self, min_freq=5):
@@ -7,11 +8,13 @@ class TextPreprocessor:
         self.word2idx = {}
         self.idx2word = {}
         self.vocab = set()
+        self.stopwords = set(stopwords.words('english'))  # Chargé une seule fois
 
     def preprocess(self, text):
         text = text.lower()
-        text = re.sub(r'[^a-z\s]', '', text)
+        text = re.sub(r"[^a-zàâçéèêëîïôûùüÿñæœ\s]", "", text)
         tokens = text.split()
+        tokens = [token for token in tokens if token not in self.stopwords]
         return tokens
 
     def build_vocab(self, tokens):
@@ -27,3 +30,4 @@ class TextPreprocessor:
 
     def decode(self, indices):
         return [self.idx2word[idx] for idx in indices]
+
