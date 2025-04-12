@@ -1,0 +1,1 @@
+from .visual_embedding import plot_embeddings

@@ -1,0 +1,28 @@
+.venv
+data
+__pycache__
+# Ignorer les fichiers macOS
+.DS_Store
+._*
+
+# Ignorer les fichiers VSCode
+.vscode/
+
+# Ignorer les fichiers Python spécifiques
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignorer les fichiers de cache
+*.log
+*.swp
+*.swo
+
+# Ignorer les répertoires de build et de distribution
+build/
+dist/
+*.egg-info/
+
+# Ignorer les fichiers spécifiques à l'IDE (ex. IntelliJ, PyCharm)
+.idea/
+*.iml
