@@ -31,7 +31,7 @@ class CBOWModel:
         if self.use_ann:
             outputs = Dense(self.vocab_size, activation='softmax')(x)
         else:
-            outputs = x  # juste l'embedding moyen
+            outputs = x 
 
         model = Model(inputs=inputs, outputs=outputs)
 
