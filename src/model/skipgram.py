@@ -67,4 +67,3 @@ class SkipGramModel:
 
     def get_embeddings(self):
         return self.model.get_layer("embedding").get_weights()[0]
-
