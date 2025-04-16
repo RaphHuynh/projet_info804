@@ -1,9 +1,19 @@
-# src/skipgram.py
-
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Embedding, Dot, Reshape, Activation
 from tensorflow.keras.optimizers import Adam, SGD
+from tensorflow.keras.utils import to_categorical
+import numpy as np
 
+def skipgram_generator(target_words, context_words, labels, batch_size):
+    num_samples = len(target_words)
+    while True:
+        for offset in range(0, num_samples, batch_size):
+            batch_target = target_words[offset:offset+batch_size]
+            batch_context = context_words[offset:offset+batch_size]
+            batch_labels = labels[offset:offset+batch_size]
+            yield [batch_target, batch_context], batch_labels
+
+            
 class SkipGramModel:
     def __init__(self, vocab_size, embedding_dim=100, optimizer=None, learning_rate=0.01):
         """
@@ -62,8 +72,10 @@ class SkipGramModel:
     def summary(self):
         return self.model.summary()
 
-    def train(self, target_words, context_words, labels, epochs=10, batch_size=512):
-        self.model.fit([target_words, context_words], labels, epochs=epochs, batch_size=batch_size)
+    def train(self, target_words, context_words, labels, epochs=10, batch_size=32):
+        steps_per_epoch = len(target_words) // batch_size
+        gen = skipgram_generator(target_words, context_words, labels, batch_size)
+        self.model.fit(gen, epochs=epochs, steps_per_epoch=steps_per_epoch)
 
     def get_embeddings(self):
         return self.model.get_layer("embedding").get_weights()[0]

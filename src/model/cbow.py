@@ -3,6 +3,16 @@ from tensorflow.keras.layers import Input, Embedding, Dense, Lambda
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.optimizers import Adam, SGD
 import tensorflow.keras.backend as K
+import numpy as np
+
+def data_generator(X, y, batch_size, vocab_size):
+    num_samples = len(X)
+    while True:
+        for offset in range(0, num_samples, batch_size):
+            batch_X = X[offset:offset+batch_size]
+            batch_y = y[offset:offset+batch_size]
+            batch_y_cat = to_categorical(batch_y, num_classes=vocab_size)
+            yield batch_X, batch_y_cat
 
 
 class CBOWModel:
@@ -40,11 +50,14 @@ class CBOWModel:
 
         return model
 
-    def train(self, X, y, epochs=10, verbose=1):
+    def train(self, X, y, epochs=10, batch_size=128, verbose=1):
         if not self.use_ann:
             raise RuntimeError("Ce modèle ne peut pas être entraîné sans couche ANN (use_ann=False).")
-        y_cat = to_categorical(y, num_classes=self.vocab_size)
-        self.model.fit(X, y_cat, epochs=epochs, verbose=verbose)
+        
+        gen = data_generator(X, y, batch_size, self.vocab_size)
+        steps_per_epoch = len(X) // batch_size
+
+        self.model.fit(gen, epochs=epochs, steps_per_epoch=steps_per_epoch, verbose=verbose)
 
     def get_embeddings(self):
         return self.model.get_layer('embedding').get_weights()[0]
