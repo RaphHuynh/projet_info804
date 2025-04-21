@@ -8,10 +8,10 @@ def skipgram_generator(target_words, context_words, labels, batch_size):
     num_samples = len(target_words)
     while True:
         for offset in range(0, num_samples, batch_size):
-            batch_target = target_words[offset:offset+batch_size]
-            batch_context = context_words[offset:offset+batch_size]
-            batch_labels = labels[offset:offset+batch_size]
-            yield [batch_target, batch_context], batch_labels
+            batch_target = np.array(target_words[offset:offset+batch_size])
+            batch_context = np.array(context_words[offset:offset+batch_size])
+            batch_labels = np.array(labels[offset:offset+batch_size])
+            yield (batch_target, batch_context), batch_labels
 
             
 class SkipGramModel:
