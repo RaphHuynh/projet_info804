@@ -30,3 +30,4 @@ def generate_negative_samples(vocab_size, positive_pairs, num_negative=5):
             labels.append(0)
 
     return negative_samples, labels
+

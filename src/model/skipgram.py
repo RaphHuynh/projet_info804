@@ -72,8 +72,8 @@ class SkipGramModel:
     def summary(self):
         return self.model.summary()
 
-    def train(self, target_words, context_words, labels, epochs=10, batch_size=32):
-        steps_per_epoch = len(target_words) // batch_size
+    def train(self, target_words, context_words, labels, epochs=10, batch_size=16):
+        steps_per_epoch = max(1, len(target_words) // batch_size)
         gen = skipgram_generator(target_words, context_words, labels, batch_size)
         self.model.fit(gen, epochs=epochs, steps_per_epoch=steps_per_epoch)
 
