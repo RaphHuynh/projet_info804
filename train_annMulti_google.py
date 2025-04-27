@@ -16,16 +16,6 @@ import nltk
 
 nltk.download('stopwords')
 
-# Configuration pour utiliser le GPU
-gpus = tf.config.list_physical_devices('GPU')
-if gpus:
-    try:
-        # Allouer la mémoire de manière dynamique
-        for gpu in gpus:
-            tf.config.experimental.set_memory_growth(gpu, True)
-    except RuntimeError as e:
-        print(e)
-
 # === Chargement des embeddings Google Word2Vec ===
 from gensim.models import KeyedVectors
 
