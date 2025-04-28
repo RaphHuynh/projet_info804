@@ -75,7 +75,7 @@ print(f"Nombre d'exemples dans l'ensemble de validation : {len(X_val)}")
 print(f"Nombre d'exemples dans l'ensemble de test : {len(X_test)}")
 
 # 6. Charger l'embedding
-embedding_matrix = np.load("embeddings_cbow_30.npy")
+embedding_matrix = np.load("embeddings_skipgram_30.npy")
 
 # Instancier ton classifieur
 classifier = ANNClassifierMultiClass(
